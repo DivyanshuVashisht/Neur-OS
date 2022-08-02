@@ -69,6 +69,11 @@ void panic(const char* msg){
     while(1){}
 }
 
+void kernel_page(){
+    kernel_registers();
+    paging_switch(kernel_chunk);
+}
+
 struct tss tss;
 struct gdt gdt_real[NEUROS_TOTAL_GDT_SEGMENTS];
 struct gdt_structured gdt_structured[NEUROS_TOTAL_GDT_SEGMENTS] = {
