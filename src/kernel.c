@@ -88,8 +88,6 @@ struct gdt_structured gdt_structured[NEUROS_TOTAL_GDT_SEGMENTS] = {
 
 void kernel_main(){
     terminal_initialize();
-    print("Hello World!\nThis is the second line!\n");
-
     memset(gdt_real, 0x00, sizeof(gdt_real));
     gdt_structured_to_gdt(gdt_real, gdt_structured, NEUROS_TOTAL_GDT_SEGMENTS);
     

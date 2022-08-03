@@ -110,7 +110,7 @@ void task_save_state(struct task* task, struct interrupt_frame* frame){
     task->registers.esi = frame->esi;
 }
 
-int copy_strint_from_task(struct task* task, void* virtual, void* phys, int max){
+int copy_string_from_task(struct task* task, void* virtual, void* phys, int max){
     if (max >= PAGING_PAGE_SIZE){
         return -EINVARG;
     }
