@@ -1,4 +1,4 @@
-FILES=./build/start.o
+FILES=./build/start.o ./build/neuros.o
 INCLUDES=
 
 all: ${FILES}
@@ -6,6 +6,9 @@ all: ${FILES}
 
 ./build/start.o: ./src/start.asm
 	nasm -f elf ./src/start.asm -o ./build/start.o
+
+./build/neuros.o: ./src/neuros.asm
+	nasm -f elf ./src/neuros.asm -o ./build/neuros.o
 
 clean:
 	rm -rf ./build/start.o
