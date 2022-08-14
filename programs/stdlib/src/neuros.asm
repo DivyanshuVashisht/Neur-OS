@@ -3,7 +3,7 @@
 section .asm
 
 global print:function
-global getkey:function
+global neuros_getkey:function
 global neuros_putchar: function
 global neuros_malloc:function
 global neuros_free:function
@@ -20,7 +20,7 @@ print:
     ret
 
 ; int getkey()
-getkey:
+neuros_getkey:
     push ebp
     mov ebp, esp
     mov eax, 2 ; Command getkey

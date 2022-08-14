@@ -1,0 +1,39 @@
+#include "neuros.h"
+
+int neuros_getkeyblock(){
+    int val = 0;
+    do{
+        val = neuros_getkey();
+    } while(val == 0);
+
+    return val;
+}
+
+void neuros_terminal_readline(char* out, int max, bool output_while_typing){
+    int i = 0;
+    for (i = 0; i < max - 1; i++){
+        char key = neuros_getkeyblock();
+
+        //Carriage return means we have read the line
+        if (key == 13){
+            break;
+        }
+
+        if (output_while_typing){
+            neuros_putchar(key);
+        }
+
+        // Backspace
+        if (key == 0x08 && i >= 1){
+            out[i - 1] = 0x00;
+            // -2 because we'll +1 when we go to the continue;
+            i -= 2;
+            continue;
+        }
+
+        out[i] = key;
+    }
+
+    // Add the null terminator
+    out[i] = 0x00;
+}
