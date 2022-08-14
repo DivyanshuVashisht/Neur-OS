@@ -4,6 +4,7 @@ section .asm
 
 global print:function
 global getkey:function
+global neuros_putchar: function
 global neuros_malloc:function
 global neuros_free:function
 
@@ -24,6 +25,17 @@ getkey:
     mov ebp, esp
     mov eax, 2 ; Command getkey
     int 0x80
+    pop ebp
+    ret
+
+; void neuros_putchar(char c)
+neuros_putchar:
+    push ebp
+    mov ebp, esp
+    mov eax, 3 ; Command putchar
+    push dword[ebp+8] ; Variable "c"
+    int 0x80
+    add esp, 4
     pop ebp
     ret
 

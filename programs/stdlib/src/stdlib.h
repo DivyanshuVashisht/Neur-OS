@@ -1,5 +1,5 @@
-#ifndef STDLIB_H
-#define STDLIB_H
+#ifndef NEUROS_STDLIB_H
+#define NEUROS_STDLIB_H
 
 #include <stddef.h>
 
