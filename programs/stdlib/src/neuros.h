@@ -6,5 +6,6 @@
 void print(const char* message);
 int getkey();
 void* neuros_malloc(size_t size);
+void neuros_free(void* ptr);
 
 #endif
