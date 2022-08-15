@@ -4,8 +4,5 @@
 
 int main(int argc, char** argv){
     printf("My age is %i\n", 100);
-    while(1){
-    
-    };
     return 0;
 }

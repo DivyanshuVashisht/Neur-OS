@@ -12,5 +12,6 @@ void neuros_free(void* ptr);
 
 int neuros_getkeyblock();
 void neuros_terminal_readline(char* out, int max, bool output_while_typing);
+void neuros_process_load_start(const char* filename);
 
 #endif
