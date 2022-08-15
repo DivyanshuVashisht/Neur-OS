@@ -8,5 +8,5 @@ all: ${FILES}
 	i686-elf-gcc ${INCLUDES} -I./ $(FLAGS) -std=gnu99 -c ./blank.c -o ./build/blank.o
 
 clean:
-	rm -rf ./build/blank.o
+	rm -rf ${FILES}
 	rm ./blank.elf
