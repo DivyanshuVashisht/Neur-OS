@@ -8,6 +8,7 @@ global neuros_putchar: function
 global neuros_malloc:function
 global neuros_free:function
 global neuros_process_load_start:function
+global neuros_process_get_arguments:function
 
 ; void print(const char* message)
 print:
@@ -68,6 +69,17 @@ neuros_process_load_start:
     mov ebp, esp 
     mov eax, 6 ; Command 6 process load start (starts a process)
     push dword[ebp+8] ; Variable "filename"
+    int 0x80
+    add esp, 4
+    pop ebp
+    ret
+
+; void neuros_process_get_arguments(struct process_arguments* arguments)
+neuros_process_get_arguments:
+    push ebp
+    mov ebp, esp
+    mov eax, 8 ; Command 8
+    push dword[ebp+8] ; Variable arguments
     int 0x80
     add esp, 4
     pop ebp
