@@ -90,7 +90,7 @@ static bool process_is_process_pointer(struct process *process, void *ptr)
 {
     for (int i = 0; i < NEUROS_MAX_PROGRAM_ALLOCATIONS; i++)
     {
-        if (process->allocations[i].ptr == 0)
+        if (process->allocations[i].ptr == ptr)
         {
             return true;
         }
@@ -171,8 +171,11 @@ void process_switch_to_any()
         if (processes[i])
         {
             process_switch(processes[i]);
+            return;
         }
     }
+
+    panic("No processes to switch to!!\n");
 }
 
 static void process_unlink(struct process *process)
@@ -182,10 +185,7 @@ static void process_unlink(struct process *process)
     if (current_process == process)
     {
         process_switch_to_any();
-        return;
     }
-
-    panic("No processes to switch to!!\n");
 }
 
 int process_terminate(struct process *process)
@@ -522,7 +522,7 @@ int process_load_for_slot(const char *filename, struct process **process, int pr
     *process = _process;
 
     // Add the process to the array
-    process[process_slot] = _process;
+    processes[process_slot] = _process;
 
 out:
     if (ISERR(res))

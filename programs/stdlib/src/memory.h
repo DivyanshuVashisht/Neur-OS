@@ -1,5 +1,5 @@
 #ifndef NEUROS_MEMORY_H
-#define NEUROS_MEMEORY_H
+#define NEUROS_MEMORY_H
 
 #include <stddef.h>
 
