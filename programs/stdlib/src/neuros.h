@@ -23,7 +23,9 @@ void neuros_free(void* ptr);
 struct command_argument* neuros_parse_command(const char* command, int max);
 int neuros_getkeyblock();
 void neuros_terminal_readline(char* out, int max, bool output_while_typing);
+int neuros_system(struct command_argument* arguments);
 void neuros_process_load_start(const char* filename);
 void neuros_process_get_arguments(struct process_arguments* arguments);
+int neuros_system_run(const char* command);
 
 #endif

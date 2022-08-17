@@ -9,7 +9,8 @@ int main(int argc, char** argv){
         print("> ");
         char buf[1024];
         neuros_terminal_readline(buf, sizeof(buf), true);
-        neuros_process_load_start(buf);
+        print("\n");
+        neuros_system_run(buf);
         
         print("\n");
     }
