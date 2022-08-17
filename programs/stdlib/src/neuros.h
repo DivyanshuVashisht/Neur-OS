@@ -27,5 +27,6 @@ int neuros_system(struct command_argument* arguments);
 void neuros_process_load_start(const char* filename);
 void neuros_process_get_arguments(struct process_arguments* arguments);
 int neuros_system_run(const char* command);
+void neuros_exit();
 
 #endif
