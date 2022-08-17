@@ -5,6 +5,7 @@
 #include "task/task.h"
 #include "io/io.h"
 #include "status.h"
+#include "task/process.h"
 
 struct idt_desc idt_descriptors[NEUROS_TOTAL_INTERRUPTS];
 struct idtr_desc idtr_descriptor;
@@ -47,6 +48,12 @@ void idt_set(int interrupt_no, void* address){
     desc->type_attr = 0xEE;
     desc->offset_2 = (uint32_t) address >> 16;
 }
+
+void idt_handle_exception(){
+    process_terminate(task_current()->process);
+    task_next();
+}
+
 void idt_init(){
     memset(idt_descriptors, 0, sizeof(idt_descriptors));
     idtr_descriptor.limit = sizeof(idt_descriptors) - 1;
@@ -59,6 +66,9 @@ void idt_init(){
     idt_set(0, idt_zero);
     idt_set(0x80, isr80h_wrapper);
 
+    for (int i = 0; i < 0x20; i++){
+        idt_register_interrupt_callback(i, idt_handle_exception);
+    }
     // Load the interrupt descriptor table
     idt_load(&idtr_descriptor);
 }
