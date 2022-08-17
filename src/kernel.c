@@ -20,80 +20,97 @@
 #include "keyboard/keyboard.h"
 #include "task/tss.h"
 
-uint16_t* video_mem = 0;
+uint16_t *video_mem = 0;
 uint16_t terminal_row = 0;
 uint16_t terminal_col = 0;
 
-uint16_t terminal_make_char(char c, char colour){
+uint16_t terminal_make_char(char c, char colour)
+{
     return (colour << 8) | c;
 }
 
-void terminal_putchar(int x, int y, char c, char colour){
+void terminal_putchar(int x, int y, char c, char colour)
+{
     video_mem[(y * VGA_WIDTH) + x] = terminal_make_char(c, colour);
 }
 
-void terminal_backspace(){
-    if (terminal_row == 0 && terminal_col == 0){
+void terminal_backspace()
+{
+    if (terminal_row == 0 && terminal_col == 0)
+    {
         return;
     }
 
-    if (terminal_col == 0){
+    if (terminal_col == 0)
+    {
         terminal_row -= 1;
         terminal_col = VGA_WIDTH;
-
     }
 
-    terminal_col -=1;
+    terminal_col -= 1;
     terminal_writechar(' ', 15);
-    terminal_col -=1;
+    terminal_col -= 1;
 }
 
-void terminal_writechar(char c, char colour){
-    if (c == '\n'){
+void terminal_writechar(char c, char colour)
+{
+    if (c == '\n')
+    {
         terminal_row += 1;
         terminal_col = 0;
         return;
     }
 
-    if (c == 0x08){
+    if (c == 0x08)
+    {
         terminal_backspace();
         return;
     }
 
     terminal_putchar(terminal_col, terminal_row, c, colour);
     terminal_col += 1;
-    if (terminal_col >= VGA_WIDTH){
+    if (terminal_col >= VGA_WIDTH)
+    {
         terminal_col = 0;
         terminal_row += 1;
     }
 }
 
-void terminal_initialize(){
-    video_mem = (uint16_t*)(0xB8000);
+void terminal_initialize()
+{
+    video_mem = (uint16_t *)(0xB8000);
     terminal_row = 0;
     terminal_col = 0;
-    for (int y = 0; y < VGA_HEIGHT; y++){
-        for (int x = 0; x < VGA_WIDTH; x++){
+    for (int y = 0; y < VGA_HEIGHT; y++)
+    {
+        for (int x = 0; x < VGA_WIDTH; x++)
+        {
             terminal_putchar(x, y, ' ', 0);
         }
     }
 }
 
-void print(const char* str){
+void print(const char *str)
+{
     size_t len = strlen(str);
-    for (int i = 0; i < len; i++){
+    for (int i = 0; i < len; i++)
+    {
         terminal_writechar(str[i], 15);
     }
 }
 
-static struct paging_4gb_chunk* kernel_chunk = 0;
+static struct paging_4gb_chunk *kernel_chunk = 0;
 
-void panic(const char* msg){
+void panic(const char *msg)
+{
     print(msg);
-    while(1){}
+    while (1)
+    {
+    }
 }
 
-void kernel_page(){
+void kernel_page()
+{
     kernel_registers();
     paging_switch(kernel_chunk);
 }
@@ -101,32 +118,33 @@ void kernel_page(){
 struct tss tss;
 struct gdt gdt_real[NEUROS_TOTAL_GDT_SEGMENTS];
 struct gdt_structured gdt_structured[NEUROS_TOTAL_GDT_SEGMENTS] = {
-    {.base = 0x00, .limit = 0x00, .type = 0x00},        // NULL SEGMENT
-    {.base = 0x00, .limit = 0xffffffff, .type = 0x9a},  // Kernel CODE SEGMENT
-    {.base = 0x00, .limit = 0xffffffff, .type = 0x92},  // Kernel DATA SEGMENT
-    {.base = 0x00, .limit = 0xffffffff, .type = 0xf8},  // User CODE SEGMENT
-    {.base = 0x00, .limit = 0xffffffff, .type = 0xf2},  // User DATA SEGMENT
-    {.base = (uint32_t)&tss, .limit = sizeof(tss), .type = 0xE9}    // TSS SEGMENT
+    {.base = 0x00, .limit = 0x00, .type = 0x00},                 // NULL SEGMENT
+    {.base = 0x00, .limit = 0xffffffff, .type = 0x9a},           // Kernel CODE SEGMENT
+    {.base = 0x00, .limit = 0xffffffff, .type = 0x92},           // Kernel DATA SEGMENT
+    {.base = 0x00, .limit = 0xffffffff, .type = 0xf8},           // User CODE SEGMENT
+    {.base = 0x00, .limit = 0xffffffff, .type = 0xf2},           // User DATA SEGMENT
+    {.base = (uint32_t)&tss, .limit = sizeof(tss), .type = 0xE9} // TSS SEGMENT
 };
 
-void kernel_main(){
+void kernel_main()
+{
     terminal_initialize();
     memset(gdt_real, 0x00, sizeof(gdt_real));
     gdt_structured_to_gdt(gdt_real, gdt_structured, NEUROS_TOTAL_GDT_SEGMENTS);
-    
+
     // Load the GDT
     gdt_load(gdt_real, sizeof(gdt_real));
-    
+
     // Initialize the heap
     kheap_init();
 
-    // Initialize filesystems 
+    // Initialize filesystems
     fs_init();
 
     // Search and initialize the disks
     disk_search_and_init();
 
-    // Initialize the interrupt descriptor table 
+    // Initialize the interrupt descriptor table
     idt_init();
 
     // Setup the TSS
@@ -152,12 +170,13 @@ void kernel_main(){
     // Initialize all the system keyboards
     keyboard_init();
 
-    struct process* process = 0;
+    struct process *process = 0;
     int res = process_load_switch("0:/shell.elf", &process);
-    if (res != NEUROS_ALL_OK){
+    if (res != NEUROS_ALL_OK)
+    {
         panic("Failed to load shell.elf\n");
     }
-    
+
     struct command_argument argument;
     strcpy(argument.argument, "Testing");
     argument.next = 0x00;
@@ -166,6 +185,7 @@ void kernel_main(){
 
     task_run_first_ever_task();
 
-    while (1) {}
-
+    while (1)
+    {
+    }
 }
